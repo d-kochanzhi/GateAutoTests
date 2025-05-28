@@ -7,18 +7,26 @@ class LoginPage(BasePage):
 
     PAGE_URL = Links.LOGIN_PAGE
 
-    USERNAME_FIELD = ("xpath", "//input[@name='username']")
-    PASSWORD_FIELD = ("xpath", "//input[@name='password']")
-    SUBMIT_BUTTON = ("xpath", "//button[@type='submit']")
+    LOGIN_FIELD = ("xpath", "//div[@class='auth__form']/descendant::input[@placeholder='Введите почту']")
+    PASSWORD_FIELD = ("xpath", "//div[@class='auth__form']/descendant::input[@type='password']")
+    SUBMIT_BUTTON = ("xpath", "//button[.//span[contains(text(), 'Войти')]]")
     
-    @allure.step("Enter login")
+    @allure.step("Ввод логина")
     def enter_login(self, login):
-        self.wait.until(EC.element_to_be_clickable(self.USERNAME_FIELD)).send_keys(login)
+        self.wait.until(EC.element_to_be_clickable(self.LOGIN_FIELD)).send_keys(login)
 
-    @allure.step("Enter password")
+    @allure.step("Ввод пароля")
     def enter_password(self, password):
         self.wait.until(EC.element_to_be_clickable(self.PASSWORD_FIELD)).send_keys(password)
 
-    @allure.step("Click submit button")
+    @allure.step("Нажатие кнопки <Войти>")
     def click_submit_button(self):
         self.wait.until(EC.element_to_be_clickable(self.SUBMIT_BUTTON)).click()
+        # Ждем, пока URL изменится, то есть произойдет редирект
+        self.wait.until(lambda driver: driver.current_url != self.PAGE_URL) 
+       
+    @allure.step("Проверка перенаправления после авторизации")
+    def check_after_submit_redirect(self):       
+        current_url = self.driver.current_url
+        assert current_url != self.PAGE_URL, f"Предполагалось что будет перенаправление после авторизации, но получили URL {current_url}" 
+        

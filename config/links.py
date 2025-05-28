@@ -1,8 +1,9 @@
+import os
+
 
 
 class Links:
-
-    HOST = "https://opensource-demo.orangehrmlive.com/web/index.php"
-    LOGIN_PAGE = f"{HOST}/auth/login"
-    DASHBOARD_PAGE = f"{HOST}/dashboard/index"
-    PERSONAL_PAGE = f"{HOST}/pim/viewPersonalDetails/empNumber/7"
+    HOST = os.environ.get("HOST", "http://www.msp.lan")
+    LOGIN_PAGE = f"{HOST}/msp/auth"
+    MSP_PAGE = f"{HOST}/msp"
+  

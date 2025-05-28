@@ -4,3 +4,4 @@
 .env
 report
 allure-results
+allure-report
