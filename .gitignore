@@ -1,7 +1,7 @@
 .pytest_cache
 .idea
 *.iml
-.env
 report
 allure-results
 allure-report
+__pycache__/

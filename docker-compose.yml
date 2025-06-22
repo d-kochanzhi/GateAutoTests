@@ -1,8 +1,8 @@
 version: '3.7'
 
 services:
-  regression:
-    image: python:3.12.0a4-alpine3.17
+  pytest:
+    shm_size: 2gb
     build:
       context: .
       dockerfile: Dockerfile
@@ -11,6 +11,25 @@ services:
     command: /bin/sh -c "ls -la && pytest -sv --alluredir=allure-results && allure generate --clean -o allure-report allure-results"
     working_dir: /usr/workspace
     environment:
-      - LOGIN=${LOGIN}
-      - PASSWORD=${PASSWORD}
-      - HOST=${HOST}
+      - HOST=${HOST:-http://www.msp.lan}
+      - HEADLESS=true
+
+  allure:
+    image: 'frankescobar/allure-docker-service'
+    environment:
+      CHECK_RESULTS_EVERY_SECONDS: 1
+      KEEP_HISTORY: 1
+    ports:
+      - '5050:5050'
+    volumes:
+      - ./allure-results:/app/allure-results
+
+  allure-ui:
+    image: 'frankescobar/allure-docker-service-ui'
+    environment:
+      ALLURE_DOCKER_PUBLIC_API_URL: 'http://localhost:5050'
+      ALLURE_DOCKER_PUBLIC_API_URL_PREFIX: ''
+    ports:
+      - '5252:5252'
+    depends_on:
+      - allure
